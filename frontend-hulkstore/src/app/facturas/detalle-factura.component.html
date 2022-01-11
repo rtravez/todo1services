@@ -1,0 +1,53 @@
+<div class="card border-primary mb-3" *ngIf="factura">
+  <div class="card-header">{{ titulo }}: {{ factura.descripcion }}</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">
+      <a [routerLink]="['/empleado']" class="btn btn-light btn-xs">Volver</a>
+    </h5>
+
+    <ul class="list-group my-2">
+      <li class="list-group-item list-group-item-primary">Datos del Empleado</li>
+      <li class="list-group-item">{{ factura.empleado.nombre }}</li>
+      <li class="list-group-item">{{ factura.empleado.apellido }}</li>
+    </ul>
+
+    <ul class="list-group my-2">
+      <li class="list-group-item list-group-item-primary">
+        Datos de la Factura
+      </li>
+      <li class="list-group-item">Id {{ factura.id }}</li>
+      <li class="list-group-item">Descripcion{{ factura.descripcion }}</li>
+      <li class="list-group-item">Observacion {{ factura.observacion }}</li>
+      <li class="list-group-item">Fecha {{ factura.createAt }}</li>
+    </ul>
+
+    <div class="table-responsive">
+      <p-table [value]="factura.items" *ngIf="factura.items?.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Id</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-items>
+          <tr>
+            <td>{{ items.id }}</td>
+            <td>{{ items.producto.nombre }}</td>
+            <td>{{ items.cantidad }}</td>
+            <td>{{ items.producto.precio }}</td>
+            <td>{{ items.importe }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="4" class="p-text-right">Gran Total</td>
+            <td>{{ factura.total | currency: "USD" }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

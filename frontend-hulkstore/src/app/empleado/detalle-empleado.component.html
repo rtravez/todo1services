@@ -1,0 +1,105 @@
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true" *ngIf="modalService.modal" style="display: block">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Detalle empleado</h5>
+        <button type="button" class="close" (click)="cerrarModal()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm">
+              <ul *ngIf="empleado" class="list-group">
+                <li class="list-group-item">{{ empleado.id }}</li>
+                <li class="list-group-item">{{ empleado.nombre }}</li>
+                <li class="list-group-item">{{ empleado.apellido }}</li>
+                <li class="list-group-item">{{ empleado.email }}</li>
+                <li class="list-group-item">
+                  {{ empleado.createAt | date: "fullDate" }}
+                </li>
+                <li class="list-group-item">{{ empleado.region.nombre }}</li>
+              </ul>
+              <div *ngIf="authService.hasRole('ROLE_ADMIN')" class="input-group mb-3">
+                <div class="custom-file">
+                  <input (change)="selecionarArchivo($event)" type="file" class="custom-file-input"
+                    id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" />
+                  <label class="custom-file-label" for="inputGroupFile04">Selecionar foto</label>
+                </div>
+                <div class="input-group-append">
+                  <button [disabled]="!archivoSelecionado" (click)="subirArchivo()" class="btn btn-outline-secondary"
+                    type="button" id="inputGroupFileAddon04">
+                    Subir
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="progreso > 0" class="progress">
+                <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ width: progreso + '%' }"
+                  attr.aria-valuenow="{{ progreso }}" aria-valuemin="0" aria-valuemax="100">
+                  {{ progreso }} %
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm">
+              <img class="img-thummbnail rouded" *ngIf="empleado?.foto"
+                src="http://localhost:8080/api/uploads/img/{{ empleado.foto }}" alt="" />
+            </div>
+          </div>
+          <div class="row">
+            <button *ngIf="authService.hasRole('ROLE_ADMIN')" class="btn btn-primary my-2"
+              [routerLink]="['/facturas', empleado.id]" (click)="cerrarModal()" data-dismiss="modal">
+              Factura
+            </button>
+          </div>
+          <div class="row">
+            <div class="alert alert-info" *ngIf="empleado.facturas?.length == 0">
+              No tiene facturas para el Empleado {{ empleado.nombre }}
+              {{ empleado.apellido }}
+            </div>
+            <div class="table-responsive">
+              <p-table [value]="empleado.facturas" *ngIf="empleado.facturas?.length > 0">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Id</th>
+                    <th>Descripcion</th>
+                    <th>Observacion</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Detalle</th>
+                    <th *ngIf="authService.hasRole('ROLE_ADMIN')">Eliminar</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-factura>
+                  <tr>
+                    <td>{{ factura.id }}</td>
+                    <td>{{ factura.descripcion }}</td>
+                    <td>{{ factura.observacion }}</td>
+                    <td>{{ factura.createAt }}</td>
+                    <td>{{ factura.total }}</td>
+                    <td>
+                      <p-button label="Ver" (click)="cerrarModal()" data-dismiss="modal" icon="pi pi-check"
+                        [routerLink]="['/facturas/form', factura.id]"></p-button>
+                    </td>
+                    <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+                      <button pButton pRipple type="button" label="Eliminar" icon="pi pi-trash"
+                        (click)="delete(factura)" class="p-button-danger"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="cerrarModal()" type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

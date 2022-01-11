@@ -1,0 +1,62 @@
+<app-detalle-empleado *ngIf="empleadoSelecionado" [empleado]="empleadoSelecionado"></app-detalle-empleado>
+
+<div class="card border-primary mb-3">
+  <div class="card-header">Empleados</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de empleados</h5>
+    <button *ngIf="authService.hasRole('ROLE_ADMIN')" class="btn btn-primary my-2" routerLink="/empleado/form">
+      Crear
+    </button>
+    <div class="alert alert-info" *ngIf="empleados?.length == 0">
+      No hay empleados en el sistema
+    </div>
+    <div class="table-responsive">
+      <p-table dataKey="id" #dt [value]="empleados" styleClass="p-datatable-customers" *ngIf="empleados?.length > 0"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 15, 25]" [paginator]="false" [rows]="5"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [filterDelay]="0"
+        [globalFilterFields]="['nombre', 'apellido', 'email']">
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngIf="authService.hasRole('ROLE_USER')">Id</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Fecha</th>
+            <th *ngIf="authService.hasRole('ROLE_ADMIN')">Factura</th>
+            <th *ngIf="authService.hasRole('ROLE_ADMIN')">Editar</th>
+            <th *ngIf="authService.hasRole('ROLE_ADMIN')">Eliminar</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-empleado>
+          <tr>
+            <td *ngIf="authService.hasRole('ROLE_USER')">
+              <img (click)="abrirModal(empleado)" class="img-thummbnail rouded" *ngIf="empleado?.foto"
+                src="http://localhost:8080/api/uploads/img/{{ empleado.foto }}" data-toggle="modal"
+                data-target="#staticBackdrop" style="width: 64px; cursor: pointer" />
+              <img (click)="abrirModal(empleado)" class="img-thummbnail rouded" *ngIf="!empleado?.foto"
+                src="http://localhost:8080/images/not-user.png" data-toggle="modal" data-target="#staticBackdrop"
+                style="width: 64px; cursor: pointer" />
+            </td>
+            <td>{{ empleado.nombre }}</td>
+            <td>{{ empleado.apellido }}</td>
+            <td>{{ empleado.email | uppercase }}</td>
+            <td>{{ empleado.createAt | date: "EEEE dd, MMMM yyyy" }}</td>
+            <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+              <button pButton pRipple type="button" label="Factura" icon="pi pi-file"
+                [routerLink]="['/facturas', empleado.id]" class="p-button-primary"></button>
+            </td>
+            <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+              <button pButton pRipple type="button" label="Editar" icon="pi pi-user-edit"
+                [routerLink]="['/empleado/form', empleado.id]" class="p-button-secondary"></button>
+            </td>
+            <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+              <button pButton pRipple type="button" label="Eliminar" icon="pi pi-trash" (click)="delete(empleado)"
+                class="p-button-danger"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <app-paginator *ngIf="paginador" [paginador]="paginador"></app-paginator>
+  </div>
+</div>
