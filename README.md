@@ -24,7 +24,8 @@ Contrasena: 12345
 Ejecutar en la consola de proyecto `ng serve -o` y navegar `http://localhost:4200/`.
 
 # Ejercicio
-Objetivo: Se espera que el candidato ofrezca una solución orientada a objetos al problema. Queda
+# Objetivo: 
+Se espera que el candidato ofrezca una solución orientada a objetos al problema. Queda
 abierta la posibilidad de que el candidato proponga una solución con las restricciones del paradigma
 funcional.
 Enunciado: “Hulk Store”
